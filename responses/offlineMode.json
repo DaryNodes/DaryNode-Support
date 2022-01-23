@@ -1,0 +1,4 @@
+{
+  "triggers": ["SERVER IS RUNNING IN OFFLINE MODE"],
+  "response": "It is a warning saying your server is allowing cracked players to join\nThis is bad if you want only premium players to join!\n\nTo fix this error set `online-mode` to `true` in your server.properties file"
+}

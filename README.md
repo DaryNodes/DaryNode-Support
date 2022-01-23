@@ -1,2 +1,5 @@
 # DaryNode-Support
-Our support bot
+
+DaryNodes Support bot
+
+Install and running instructions shall be added!
