@@ -1,4 +1,6 @@
 {
   "token": "",
-  "prefix": ""
+  "prefix": "",
+  "mongoDB_connection_url": "",
+  "mongoDB_database_name": ""
 }
