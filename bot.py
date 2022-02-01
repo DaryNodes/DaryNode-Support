@@ -4,6 +4,7 @@ from disnake.ext import commands
 import os
 import json
 import motor.motor_asyncio
+import views
 
 
 config = json.load(open('config.json'))
@@ -51,40 +52,7 @@ async def on_button_click(inter: disnake.MessageInteraction):
             description="Are you sure you want to close this ticket? This action cannot be undone."
         )
         emb.set_footer(text="Expires in 30 seconds")
-        await inter.send(embed=emb, ephemeral=True, view=confirm_button())
-
-
-class confirm_button(disnake.ui.View):
-    def __init__(self):
-        super().__init__(timeout=30)
-
-    @disnake.ui.button(
-        label="Confirm",
-        style=disnake.ButtonStyle.danger,
-        custom_id="confirm_close",
-        emoji="⚠️"
-    )
-    async def close(self, button: disnake.ui.Button, interaction: disnake.MessageInteraction):
-        await interaction.response.defer(ephemeral=True)
-        ticket_collection = bot.db['tickets']
-        ticket_doc = await ticket_collection.find_one(
-            {"channel_id": str(interaction.channel.id)})
-        if ticket_doc is None:
-            return await interaction.send(f"This channel is not a ticket channel.")
-        if ticket_doc['status'] == 'closed':
-            return await interaction.send(f"This channel is already closed.")
-        ticket_collection.update_one({"channel_id": str(interaction.channel.id)}, {
-                                     "$set": {"status": "closed"}})
-        await interaction.send(f"This ticket has been closed by {interaction.author.mention}.")
-        return await interaction.channel.delete(reason=f"Closed by {interaction.author.name}.")
-
-    @disnake.ui.button(
-        label="Cancel",
-        style=disnake.ButtonStyle.gray,
-        custom_id="cancel_close",
-    )
-    async def cancel_close(self, button: disnake.ui.Button, interaction: disnake.MessageInteraction):
-        return await interaction.send("OK! Cancelled", ephemeral=True)
+        await inter.send(embed=emb, ephemeral=True, view=views.confirm_button(bot.db))
 
 
 async def handle_response(message: disnake.Message):

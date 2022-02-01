@@ -5,6 +5,7 @@ import asyncio
 import disnake
 from disnake.ext import commands
 import json
+import views
 
 
 class Ticketing(commands.Cog):
@@ -107,7 +108,7 @@ class Ticketing(commands.Cog):
                 color=disnake.Color.green()
             )
             emb.set_author(name=ctx.author.name,
-                           icon_url=ctx.author.avatar_url)
+                           icon_url=ctx.author.avatar.url)
         else:
             emb = disnake.Embed(
                 title=f"Ticket Number: {channel.name.split('-')[0]}",
@@ -118,9 +119,8 @@ class Ticketing(commands.Cog):
             text=f"Please wait for the support team to respond.")
         emb.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
         emb.add_field(name="Category", value=category)
-        close_button = self.close_button()
         await channel.purge(limit=3)
-        await channel.send(embed=emb, view=close_button)
+        await channel.send(embed=emb, view=views.close_button())
 
     @commands.command(name="closeticket")
     async def _closeticket(self, ctx: commands.context):
@@ -135,19 +135,6 @@ class Ticketing(commands.Cog):
                                      "$set": {"status": "closed"}})
         await ctx.channel.send(f"This ticket has been closed by {ctx.author.mention}.")
         return await ctx.channel.delete(reason=f"Closed by {ctx.author.name}.")
-
-    class close_button(disnake.ui.View):
-        def __init__(self):
-            super().__init__(timeout=None)
-
-        @disnake.ui.button(
-            label="Close",
-            style=disnake.ButtonStyle.danger,
-            custom_id="close_ticket",
-            emoji="🔒"
-        )
-        async def close(self, button: disnake.ui.Button, interaction: disnake.MessageInteraction):
-            pass
 
     @commands.command(name="getlog")
     async def _get_ticket_log(self, ctx: commands.Context, ticket_number: str, category: str):
