@@ -1,11 +1,10 @@
-from ast import Lambda
 from datetime import datetime
 from time import sleep
 import asyncio
 import disnake
 from disnake.ext import commands
-import json
 import views
+import functions
 
 
 class Ticketing(commands.Cog):
@@ -41,7 +40,7 @@ class Ticketing(commands.Cog):
             await channel.set_permissions(role, read_messages=True, send_messages=True, read_message_history=True)
             await channel.send(
                 f"{ctx.author.mention} Hello! Please answer the following questions so our support team can help you.")
-            await self.init_ticket(ctx, channel, "general")
+            await functions.init_ticket(ctx, channel, "general", self.bot)
         elif category == 'paid':
             ticket_no = await self.bot.db.tickets.count_documents({"category": "paid"}) + 1
             info_collection = await self.bot.db['general_info'].find_one({"guild_id": str(ctx.guild.id)})
@@ -65,7 +64,7 @@ class Ticketing(commands.Cog):
             await channel.set_permissions(role, read_messages=True, send_messages=True, read_message_history=True)
             await channel.send(
                 f"{ctx.author.mention} Hello! Please answer the following questions so our support team can help you.")
-            await self.init_ticket(ctx, channel, "paid")
+            await functions.init_ticket(ctx, channel, "paid", self.bot)
         elif category == 'panel':
             ticket_no = await self.bot.db.tickets.count_documents({"category": "panel"}) + 1
             info_collection = await self.bot.db['general_info'].find_one({"guild_id": str(ctx.guild.id)})
@@ -89,38 +88,11 @@ class Ticketing(commands.Cog):
             await channel.set_permissions(role, read_messages=True, send_messages=True, read_message_history=True)
             await channel.send(
                 f"{ctx.author.mention} Hello! Please answer the following questions so our support team can help you.")
-            await self.init_ticket(ctx, channel, "panel")
+            await functions.init_ticket(ctx, channel, "panel", self.bot)
         else:
             return await ctx.reply(
                 "Please choose a vaild category :gun:\n\n **Available Choices:** \n`general`\n`paid`\n`panel`")
         await ctx.message.delete(delay=5)
-
-    async def init_ticket(self, ctx: commands.Context, channel: disnake.TextChannel, category: str):
-        """Initialize a ticket"""
-        msg = await channel.send("Please describe your issue in less than 100 words. The request shall timeout in 180 seconds.")
-        try:
-            ans = await self.bot.wait_for('message', check=lambda m: m.author ==
-                                          ctx.author and m.channel == channel, timeout=180)
-        except asyncio.TimeoutError:
-            emb = disnake.Embed(
-                title=f"Ticket Number: {channel.name.split('-')[0]}",
-                description="None provided",
-                color=disnake.Color.green()
-            )
-            emb.set_author(name=ctx.author.name,
-                           icon_url=ctx.author.avatar.url)
-        else:
-            emb = disnake.Embed(
-                title=f"Ticket Number: {channel.name.split('-')[0]}",
-                description=ans.content,
-                color=disnake.Color.green()
-            )
-        emb.set_footer(
-            text=f"Please wait for the support team to respond.")
-        emb.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-        emb.add_field(name="Category", value=category)
-        await channel.purge(limit=3)
-        await channel.send(embed=emb, view=views.close_button())
 
     @commands.command(name="closeticket")
     async def _closeticket(self, ctx: commands.context):
