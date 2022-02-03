@@ -2,10 +2,10 @@ from disnake.ext import commands
 
 
 class PingCommand(commands.Cog):
-    """This will be for a ping command."""
+    """Category for ping command."""
 
     def __init__(self, bot: commands.Bot):
-        print("LOADED PING")
+        print("Loaded Ping Category")
         self.bot = bot
 
     @commands.command(name="ping")

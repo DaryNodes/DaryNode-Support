@@ -5,8 +5,11 @@ import views
 import functions
 
 
+# load configs
 config = json.load(open('config.json'))
+
 bot = commands.Bot(command_prefix=config["prefix"])
+
 # Load cogs
 bot.load_extension("cogs.ping")
 bot.load_extension("cogs.ticketing")
@@ -15,7 +18,7 @@ bot.load_extension("cogs.ticketing")
 @bot.event
 async def on_ready():
     await bot.change_presence(activity=disnake.Activity(type=disnake.ActivityType.watching, name="out for errors!", assets={"large_text": "DaryNodes"}), status="online")
-    print(f'We have logged in as {bot.user}')
+    print(f'Bot logged in as {bot.user}')
     bot.db = await functions.setup_database()
 
 
@@ -23,21 +26,25 @@ async def on_ready():
 async def on_message(message):
     ticket_document = await bot.db['tickets'].find_one(
         {"channel_id": str(message.channel.id)})
+    
     if ticket_document is not None:
-        log = ticket_document['message_log']
+        # the message was in a ticket channel
+        # log = ticket_document['message_log']
         log_inp = {
             "author": message.author.name,
             "time": message.created_at,
             "content": message.content,
             "avatar": message.author.avatar.url
         }
-        log.append(log_inp)
-        await bot.db['tickets'].update_one({'channel_id': str(message.channel.id)}, {'$set': {'message_log': log}})
+        await bot.db['tickets'].update_one({'channel_id': str(message.channel.id)}, {'$addToSet': {'message_log': log_inp}})
+    
     if message.author == bot.user:
         return
-    # Process command
+
+    # Process commands
     await bot.process_commands(message)
-    # If not command then autorespond
+
+    # If not command then handle autorespond
     await functions.handle_response(message)
 
 
