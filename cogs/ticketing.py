@@ -8,10 +8,10 @@ import functions
 
 
 class Ticketing(commands.Cog):
-    """This will be for a ping command."""
+    """Tickets category"""
 
     def __init__(self, bot: commands.Bot):
-        print("LOADED Ticketing")
+        print("Loaded Ticketing Category")
         self.bot = bot
 
     @commands.command(name="raiseticket")

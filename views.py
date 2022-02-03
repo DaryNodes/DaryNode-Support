@@ -22,7 +22,7 @@ class confirm_button(disnake.ui.View):
         if ticket_doc is None:
             return await interaction.send(f"This channel is not a ticket channel.")
         if ticket_doc['status'] == 'closed':
-            return await interaction.send(f"This channel is already closed.")
+            return await interaction.send(f"This ticket is already closed.")
         ticket_collection.update_one({"channel_id": str(interaction.channel.id)}, {
                                      "$set": {"status": "closed"}})
         await interaction.send(f"This ticket has been closed by {interaction.author.mention}.")

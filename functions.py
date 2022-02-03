@@ -11,13 +11,14 @@ config = json.load(open('config.json'))
 
 
 async def handle_response(message: disnake.Message):
+    await message.channel.trigger_typing()
     """ Handle auto responses """
     for file in os.listdir('./responses'):
         file_json = json.load(open('./responses/' + file))
         for trigger in file_json['triggers']:
             if trigger.lower() in message.content.lower():
-                await message.channel.trigger_typing()
                 return await message.reply(file_json['response'])
+    return
 
 
 def setup_logging():
@@ -36,16 +37,16 @@ async def setup_database():
     print("Setting Up MongoDB!")
     connection = motor.motor_asyncio.AsyncIOMotorClient(
         config["mongoDB_connection_url"])
-    print("Connection Successful!")
+    print("MongoDB Connection Successful!")
     try:
         db = connection[config["mongoDB_database_name"]]
-        print("Checking database")
+        print("MongoDB Checking database")
         if db['genral_info'] is None:
-            print("Database is not setup.")
+            print("MongoDB Database is not setup- EXITING")
             exit(1)
-        print("Database Loaded!")
+        print("MongoDB Database Loaded!")
     except Exception as e:
-        print(f"Failed to load database: {e}")
+        print(f"MongoDB Failed to load database: {e}, EXIT.")
         exit(1)
     return db
 
