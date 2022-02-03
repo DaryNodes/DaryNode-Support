@@ -11,7 +11,6 @@ config = json.load(open('config.json'))
 
 
 async def handle_response(message: disnake.Message):
-    await message.channel.trigger_typing()
     """ Handle auto responses """
     for file in os.listdir('./responses'):
         file_json = json.load(open('./responses/' + file))
