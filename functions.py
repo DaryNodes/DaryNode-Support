@@ -61,6 +61,8 @@ async def init_ticket(ctx: commands.Context, channel: disnake.TextChannel, categ
             description="None provided",
             color=disnake.Color.green()
         )
+        emb.set_footer(
+            text=f"Please wait for the support team to respond. If you already own a server on our paid plan, please type in {config['prefix']}serverinfo <support code> to help us resolve your issue faster!")
         emb.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
     else:
         emb = disnake.Embed(
@@ -69,7 +71,7 @@ async def init_ticket(ctx: commands.Context, channel: disnake.TextChannel, categ
             color=disnake.Color.green()
         )
     emb.set_footer(
-        text=f"Please wait for the support team to respond.")
+        text=f"Please wait for the support team to respond. If you already own a server on our paid plan, please type in {config['prefix']}serverinfo <support code> to help us resolve your issue faster!")
     emb.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
     emb.add_field(name="Category", value=category)
     await channel.purge(limit=3)

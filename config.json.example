@@ -2,5 +2,7 @@
   "token": "",
   "prefix": "",
   "mongoDB_connection_url": "",
-  "mongoDB_database_name": ""
+  "mongoDB_database_name": "",
+  "pterodactyl_url": "",
+  "pterodactyl_client_api_key": ""
 }

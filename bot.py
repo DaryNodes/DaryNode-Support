@@ -13,6 +13,7 @@ bot = commands.Bot(command_prefix=config["prefix"])
 # Load cogs
 bot.load_extension("cogs.ping")
 bot.load_extension("cogs.ticketing")
+bot.load_extension("cogs.pterodactyl")
 
 
 @bot.event
@@ -26,7 +27,7 @@ async def on_ready():
 async def on_message(message):
     ticket_document = await bot.db['tickets'].find_one(
         {"channel_id": str(message.channel.id)})
-    
+
     if ticket_document is not None:
         # the message was in a ticket channel
         # log = ticket_document['message_log']
@@ -37,7 +38,7 @@ async def on_message(message):
             "avatar": message.author.avatar.url
         }
         await bot.db['tickets'].update_one({'channel_id': str(message.channel.id)}, {'$addToSet': {'message_log': log_inp}})
-    
+
     if message.author == bot.user:
         return
 
