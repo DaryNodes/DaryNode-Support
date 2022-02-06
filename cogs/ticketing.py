@@ -109,6 +109,7 @@ class Ticketing(commands.Cog):
         return await ctx.channel.delete(reason=f"Closed by {ctx.author.name}.")
 
     @commands.command(name="getlog")
+    @commands.has_permissions(manage_channels=True)
     async def _get_ticket_log(self, ctx: commands.Context, ticket_number: str, category: str):
         if ticket_number is None:
             return await ctx.reply("Please provide a ticket number.")
@@ -126,11 +127,13 @@ class Ticketing(commands.Cog):
             await ctx.send(reply)
 
     @commands.command(name="createpanel")
+    @commands.has_permissions(manage_channels=True)
     async def _create_panel(self, ctx: commands.Context):
+        await ctx.reply("THIS COMMAND IS NOT READY TO USE.")
         channel = ctx.channel
         ctx.reply("Reply with the title of the new panel. Times out in 120 seconds")
-        self.bot.wait_for(
-            "on_message", lambda message: message.user == ctx.author, timeout=120)
+        msg = self.bot.wait_for(
+            "on_message", check=lambda message: message.user == ctx.author, timeout=120)
 
 
 def setup(bot: commands.Bot):
