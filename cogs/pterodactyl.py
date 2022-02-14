@@ -15,7 +15,9 @@ class pterodactyl_Commands(commands.Cog):
         self.bot = bot
 
     @commands.command(name="serverinfo")
-    async def _serverinfo(self, ctx: commands.Context, server_id):
+    async def _serverinfo(self, ctx: commands.Context, server_id="null"):
+        if server_id == 'null':
+            return await ctx.reply("Please enter the support code.")
         url = f"{config['pterodactyl_url']}/api/client/servers/{server_id}"
         headers = {
             "Authorization": f"Bearer {config['pterodactyl_client_api_key']}",
@@ -55,7 +57,9 @@ class pterodactyl_Commands(commands.Cog):
             await ctx.reply("Failed to get server info for the server ID provided.")
 
     @commands.command(name="serverstatus")
-    async def _serverstatus(self, ctx: commands.Context, server_id):
+    async def _serverstatus(self, ctx: commands.Context, server_id="null"):
+        if server_id == 'null':
+            return await ctx.reply("Please enter the support code.")
         url = f"{config['pterodactyl_url']}/api/client/servers/{server_id}/resources"
         headers = {
             "Authorization": f"Bearer {config['pterodactyl_client_api_key']}",
