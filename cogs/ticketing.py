@@ -129,11 +129,9 @@ class Ticketing(commands.Cog):
     @commands.command(name="createpanel")
     @commands.has_permissions(manage_channels=True)
     async def _create_panel(self, ctx: commands.Context):
-        await ctx.reply("THIS COMMAND IS NOT READY TO USE.")
-        channel = ctx.channel
-        ctx.reply("Reply with the title of the new panel. Times out in 120 seconds")
-        msg = self.bot.wait_for(
-            "on_message", check=lambda message: message.user == ctx.author, timeout=120)
+        emb = disnake.Embed(title="Raise a Ticket",
+                            description="Select a category below.")
+        await ctx.send(embed=emb, view=views.raise_ticket_select())
 
 
 def setup(bot: commands.Bot):

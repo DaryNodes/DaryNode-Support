@@ -51,3 +51,22 @@ class close_button(disnake.ui.View):
     )
     async def close(self, button: disnake.ui.Button, interaction: disnake.MessageInteraction):
         pass
+
+
+class raise_ticket_select(disnake.ui.View):
+    """Raise ticket from panel"""
+
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @disnake.ui.select(
+        options=[disnake.SelectOption(label="General Category", value="general", description="Use this category for problems related to the discord."),
+                 disnake.SelectOption(label="Paid Category", value="paid",
+                                      description="Use this category for problems related to the paid Hosting or if you want to buy a new server."),
+                 disnake.SelectOption(label="Panel Category", value="panel", description="Use this category for problems related to the panel.")],
+        custom_id="raiseticket",
+        max_values=1,
+        min_values=1
+    )
+    async def _raise_ticket_select(self, select: disnake.ui.Select, interaction: disnake.MessageInteraction):
+        pass
