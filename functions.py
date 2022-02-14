@@ -74,5 +74,10 @@ async def init_ticket(ctx: commands.Context, channel: disnake.TextChannel, categ
         text=f"Please wait for the support team to respond. If you already own a server on our paid plan, please type in {config['prefix']}serverinfo <support code> to help us resolve your issue faster!")
     emb.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
     emb.add_field(name="Category", value=category)
+    if category == 'paid':
+        # TODO: CHECK IF THEY HAVE THE PAID USER ROLE! IF SO PING THE SUPPORT TEAM!
+        text = f"Priority Support"
+    else:
+        text = "If you want priority support, you can get a paid server!"
     await channel.purge(limit=3)
-    await channel.send(embed=emb, view=views.close_button())
+    await channel.send(content=text, embed=emb, view=views.close_button())

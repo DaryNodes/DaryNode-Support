@@ -64,6 +64,7 @@ async def on_button_click(inter: disnake.MessageInteraction):
 
 @bot.event
 async def on_dropdown(interaction: disnake.MessageInteraction):
+    await interaction.response.defer(ephemeral=True)
     if interaction.data.custom_id == 'raiseticket':
         ticket_no = await bot.db.tickets.count_documents({"category": f"{interaction.data.values[0]}"}) + 1
         info_collection = await bot.db['general_info'].find_one({"guild_id": str(interaction.guild.id)})
@@ -98,6 +99,7 @@ async def on_dropdown(interaction: disnake.MessageInteraction):
         role = interaction.guild.get_role(int(help_role_id))
         await channel.set_permissions(interaction.author, read_messages=True, send_messages=True, read_message_history=True)
         await channel.set_permissions(role, read_messages=True, send_messages=True, read_message_history=True)
+        await interaction.send(f"ticket raised! Answer the question at {channel.mention}", ephemeral=True)
         await channel.send(
             f"{interaction.author.mention} Hello! Please answer the following questions so our support team can help you.")
         await functions.init_ticket(interaction, channel, f"{interaction.data.values[0]}", bot)
